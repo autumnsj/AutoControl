@@ -1,0 +1,6 @@
+D:\cpp\SJ\SJ\Win32\bin\Debug\Win32.dll
+D:\cpp\SJ\SJ\Win32\bin\Debug\Win32.pdb
+D:\cpp\SJ\SJ\Win32\obj\Debug\Win32.csproj.AssemblyReference.cache
+D:\cpp\SJ\SJ\Win32\obj\Debug\Win32.csproj.CoreCompileInputs.cache
+D:\cpp\SJ\SJ\Win32\obj\Debug\Win32.dll
+D:\cpp\SJ\SJ\Win32\obj\Debug\Win32.pdb
