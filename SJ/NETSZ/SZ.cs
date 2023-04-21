@@ -9,6 +9,12 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using System.Reflection;
 using Newtonsoft.Json;
+using System.Diagnostics.Eventing.Reader;
+using Win32;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
+using OpenCvSharp;
+
 namespace NETSZ
 {
    
@@ -97,94 +103,76 @@ namespace NETSZ
         public static extern int SZTopLevelParentMoveWindow(int hwnd, int x, int y);
          [DllImport("SJ.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool SZSetWindowSize(int hwnd, int x, int y);
-        public SZ()
-        {
 
+        [DllImport("SJ.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SZFindBmpEx(int x1, int y1, int x2, int y2, string lpszName, int backcolor, int errorcolor, int errorcount, out object fx, out object fy);
 
-        }
-        MainTreadHookInfo mainTreadHookInfo = new MainTreadHookInfo();
-        public  int GetTopLevelParentHandle(int hwnd, int x, int y)
+        public static int FindBmpEx(int x1, int y1, int x2, int y2, string lpszName, int backcolor, int errorcolor, int errorcount, out object fx, out object fy)
         {
-            return SZGetTopLevelParentHandle(hwnd);
-        }
-        public  int TopLevelParentMoveWindow(int hwnd, int x, int y)
-        {
-            return SZTopLevelParentMoveWindow(hwnd, x, y);
-        }
-        public int AllocMemory(int hwnd, int dwSize)
-        {
-            return SZAllocMemory(hwnd,dwSize);
-        }
-        public int FindWindow(string lpClassName, string lpWindowName)
-        {
-
-            return SZFindWindow(lpClassName, lpWindowName);
+            return SZFindBmpEx( x1,  y1,  x2,  y2,  lpszName,  backcolor,  errorcolor,  errorcount, out  fx, out  fy);
         }
 
-        public int FindWindowByProcess(string lpProcessName, string lpClassName, string lpWindowName)
-        {
-            return SZFindWindowByProcess(lpProcessName, lpClassName, lpWindowName);
-        }
-
-        public int GetWindowRect(int hwnd, out object x1, out object y1, out object x2, out object y2)
+        static  MainTreadHookInfo  mainTreadHookInfo = new MainTreadHookInfo();
+     
+        public static int GetWindowRect(int hwnd, out object x1, out object y1, out object x2, out object y2)
         {
             RECT rect = new RECT();
             SZGetWindowRect(hwnd,ref rect);
             x1 = rect.left; y1 = rect.top; x2 = rect.right; y2 = rect.bottom;
             return 1;
         }
-        public int MoveTo(int x, int y)
+        public static int MoveTo(int x, int y)
         {
             return SZMoveTo(x, y);
         }
 
-        public int LeftClick()
+        public static int LeftClick()
         {
             return SZLeftClick();
         }
 
-        public int MoveWindow(int hwnd, int x, int y)
+        public static int MoveWindow(int hwnd, int x, int y)
         {
             return SZMoveWindow(hwnd, x, y);
         }
 
-        public int SetWindowState(int hwnd, int flag)
+        public static int SetWindowState(int hwnd, int flag)
         {
 
             return SZSetWindowState(hwnd, flag);
         }
 
-        public int KeyPress(int vk)
+        public static int KeyPress(int vk)
         {
             return SZKeyPress(vk);
         }
 
-        public int Capture(int x1, int y1, int x2, int y2, string file)
+        public static int Capture(int x1, int y1, int x2, int y2, string file)
         {
             return SZCapture(x1,y1,x2,y2, file);
         }
 
-        public int SendString(int hwnd, string str)
+        public static int SendString(int hwnd, string str)
         {
             return SZSendString(hwnd, str);
         }
 
-        public int GetModuleBaseAddr(int hwnd, string module_name)
+        public static int GetModuleBaseAddr(int hwnd, string module_name)
         {
             return SZGetModuleBaseAddr(hwnd, module_name);
         }
 
-        public int PrivilgeEscalation()
+        public static int PrivilgeEscalation()
         {
             return SZPrivilgeEscalation();
         }
 
-        public int AsmToBytes(int addr, string lpAsmCode, byte[] lpByteBuff, out int pByteBuffSize)
+        public static int AsmToBytes(int addr, string lpAsmCode, byte[] lpByteBuff, out int pByteBuffSize)
         {
             return SZAsmToBytes(addr, lpAsmCode, lpByteBuff, out  pByteBuffSize);
         }
 
-        public int AsmCall(int hwnd,
+        public static int AsmCall(int hwnd,
                                 string asmCode,
                                 int mode,
                                 out int ret
@@ -197,7 +185,7 @@ namespace NETSZ
                                 ref  mainTreadHookInfo //如果是主线程代码申请内存空间地址，
                                 );
         }
-        public int AsmCall(int hwnd, int mode)
+        public static int AsmCall(int hwnd, int mode)
         {
             switch (mode)
             {
@@ -224,46 +212,46 @@ namespace NETSZ
             return ret;
         }
 
-        public int GetMainThreadId(int idProcess)
+        public static int GetMainThreadId(int idProcess)
         {
             return SZGetMainThreadId(idProcess);
         }
 
-        public int GetAddr(int hwnd, string lpszAddr)
+        public static int GetAddr(int hwnd, string lpszAddr)
         {
             return SZGetAddr(hwnd, lpszAddr);
         }
 
-        public float ReadFloat(int hwnd, string lpszAddr)
+        public static float ReadFloat(int hwnd, string lpszAddr)
         {
             return SZReadFloat(hwnd, lpszAddr);
         }
 
-        public int ReadInt(int hwnd, string lpszAddr, int type)
+        public static int ReadInt(int hwnd, string lpszAddr, int type)
         {
             return SZReadInt(hwnd, lpszAddr, type);
         }
 
-        public double ReadDouble(int hwnd, string lpszAddr)
+        public static double ReadDouble(int hwnd, string lpszAddr)
         {
-            return SZReadDouble(hwnd, lpszAddr);
+            return  SZReadDouble(hwnd, lpszAddr);
         }
 
-        public int ReadIntAddr(int hwnd, int nAddr, int type)
+        public static int ReadIntAddr(int hwnd, int nAddr, int type)
         {
             return SZReadIntAddr(hwnd, nAddr, type);
         }
 
-        public int WriteData(int hwnd, string lpszAddr, string data)
+        public static int WriteData(int hwnd, string lpszAddr, string data)
         {
             return SZWriteData(hwnd, lpszAddr, data);
         }
 
-        public int FindData(int hwnd, string lpszData, int dwStartAddr, int dwEndAddr)
+        public static int FindData(int hwnd, string lpszData, int dwStartAddr, int dwEndAddr)
         {
             return SZFindData(hwnd, lpszData, dwStartAddr, dwEndAddr);
         }
-        public string FindData(int hwnd, string addr_range, string lpszData)
+        public static string FindData(int hwnd, string addr_range, string lpszData)
         {
             int dwStartAddr, dwEndAddr;
             dwStartAddr = addr_range.Split('-')[0].ToHexInt();
@@ -271,21 +259,13 @@ namespace NETSZ
             return SZFindData(hwnd, lpszData, dwStartAddr, dwEndAddr).ToHexString();
         }
 
-        public int FindPic(int x1, int y1, int x2, int y2, string pic_name, string delta_color, double sim, int dir, out object x, out object y)
-        {
-
-            int xx, yy;
-            int ret = SZFindBmp(x1, y1, x2, y2, pic_name, out xx, out yy);
-            x = xx; y = yy;
-            return ret;
-        }
         
-        List<string> asmList = new List<string>();
+        static List<string>  asmList = new List<string>();
         /// <summary>
         /// 为了兼容大漠，不推荐使用
         /// </summary>
         /// <returns></returns>
-        public int AsmClear()
+        public static int AsmClear()
         {
             asmList.Clear();
             return 1;
@@ -295,7 +275,7 @@ namespace NETSZ
         /// </summary>
         /// <param name="addr"></param>
         /// <returns></returns>
-        public string AsmCode(int addr)
+        public static string AsmCode(int addr)
         {
             byte[] buf = new byte[20];
             int bufSize;
@@ -312,79 +292,79 @@ namespace NETSZ
         /// </summary>
         /// <param name="asmCode"></param>
         /// <returns></returns>
-        public int AsmAdd(string asmCode)
+        public static int AsmAdd(string asmCode)
         {
             asmList.Add(asmCode);
             return 1;
         }
-        public string FindDataEx(int hwndZ, string addr, string data, int int1, int int2, int int3)
+        public static string FindDataEx(int hwndZ, string addr, string data, int int1, int int2, int int3)
         {
             return SZFindData(hwndZ, data, addr.Split('-')[0].ToHexInt(), addr.Split('-')[1].ToHexInt()).ToHexString();
         }
         //return dm.ReadString(hwndZ,string.Format("[[{0:X}+10]+bc]",edx),1,0);
-        public string ReadString(int hwnd, string addr, int type, int len = 100)
+        public static string ReadString(int hwnd, string addr, int type, int len = 100)
         {
             int nAddr = GetAddr(hwnd, addr);
             // int 
             return CP_ReadStringByWindowHandle(hwnd, nAddr, type, len);
         }
-        public int RightClick()
+        public static int RightClick()
         {
             return SZRightClick();
         }
-        public int Reg(string ss, string sd)
+        public static int Reg(string ss, string sd)
         {
             return 1;
         }
-        public int ForceUnBindWindow(int ddd)
+        public static int ForceUnBindWindow(int ddd)
         {
             return 1;
         }
-        public int BindWindowEx(int dd, string kk, string kks, string asdf, string kkl, int llkd)
+        public static int BindWindowEx(int dd, string kk, string kks, string asdf, string kkl, int llkd)
         {
             return 1;
         }
-        public int UnBindWindow()
+        public static int UnBindWindow()
         {
             return 1;
         }
-        public int RightDown()
+        public static int RightDown()
         {
             return SZRightDown();
         }
-        public string GetColor(int x, int y)
+        public static string GetColor(int x, int y)
         {
             return "";
         }
-        public int RightUp()
+        public static int RightUp()
         {
             return SZRightUp();
         }
-        public int WheelDown()
+        public static int WheelDown()
         {
             return 1;
         }
-        public int KeyDown(int key)
+        public static int KeyDown(int key)
         {
             return SZKeyDown(key);
         }
-        public int KeyUp(int key)
+        public static int KeyUp(int key)
         {
             return SZKeyUp(key);
         }
-        public int LeftUp()
+        public static int LeftUp()
         {
             return SZLeftUp();
         }
-        public int LeftDown()
+        public static int LeftDown()
         {
             return SZLeftDown();
         }
-        public int WheelUp()
+        public static int WheelUp()
         {
             return 1;
         }
-        public bool SetWindowSize(int hwnd, int cx, int cy)
+        public static bool SetWindowSize(int hwnd, int cx, int cy)
         {
             return SZSetWindowSize(hwnd,cx,cy);
         }
@@ -394,30 +374,95 @@ namespace NETSZ
             public int X;
             public int Y;
         }
-        public   int SetTimerCall(int hwnd, string lpszASM, TimerInfo pTimerInfo)
+        public static int SetTimerCall(int hwnd, string lpszASM, TimerInfo pTimerInfo)
         {
             return SZSetTimerCall(hwnd, lpszASM, pTimerInfo);
         }
       
-        public   int KillTimerCall(int  hwnd, TimerInfo pTimerInfo)
+        public static int KillTimerCall(int  hwnd, TimerInfo pTimerInfo)
         {
             return SZKillTimerCall(hwnd, pTimerInfo);
         }
 
-        public   int SetTimerSleep(int hwnd, int dwInterval, int dwSleep)
+        public static int SetTimerSleep(int hwnd, int dwInterval, int dwSleep)
         {
             return SZSetTimerSleep(hwnd, dwInterval, dwSleep);
         }
 
-        public   int KillTimerSleep(int hwnd)
+        public static int KillTimerSleep(int hwnd)
         {
             return SZKillTimerSleep(hwnd);
         }
        
-        public   int InputString(string str)
+        public static int InputString(string str)
         {
             return SZInputString(str);
         }
-    
+
+
+        /// <summary>
+        /// 图片转成字节
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static byte[] ImageToBytes(Image img)
+        {
+            MemoryStream ms = new MemoryStream();
+            byte[] imagedata = null;
+            img.Save(ms, ImageFormat.Bmp);
+            imagedata = ms.GetBuffer();
+            return imagedata;
+        }
+
+        /// <summary>
+        /// 字节转换成图片
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static Image BytesToImage(byte[] bytes)
+        {
+            MemoryStream ms = new MemoryStream(bytes);
+            Image img = Image.FromStream(ms);
+            return img;
+        }
+        public static Bitmap GetScreenCapture()
+        {
+            Rectangle tScreenRect = new Rectangle(0, 0, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            Bitmap tSrcBmp = new Bitmap(tScreenRect.Width, tScreenRect.Height); // 用于屏幕原始图片保存
+            Graphics gp = Graphics.FromImage(tSrcBmp);
+            gp.CopyFromScreen(0, 0, 0, 0, tScreenRect.Size);
+            gp.DrawImage(tSrcBmp, 0, 0, tScreenRect, GraphicsUnit.Pixel);
+            return tSrcBmp;
+        }
+        public static Rectangle FindScreenPic(string path, double threshold =1)
+        {
+            Image matchImage = Image.FromFile(path);
+            Image sourceImage = GetScreenCapture();
+            return FindPic(sourceImage, matchImage, threshold);
+        }
+        public static Rectangle FindPic(Image sourceImage, Image matchImage, double threshold =1)
+        {
+            var refMat = Mat.FromImageData(ImageToBytes(sourceImage), ImreadModes.AnyColor);//大图
+            var tplMat = Mat.FromImageData(ImageToBytes(matchImage), ImreadModes.AnyColor);//小图
+            using (Mat res = new Mat(refMat.Rows - tplMat.Rows + 1, refMat.Cols - tplMat.Cols + 1, MatType.CV_32FC1))
+            {
+                Mat gref = refMat.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Mat gtpl = tplMat.CvtColor(ColorConversionCodes.BGR2GRAY);
+
+                Cv2.MatchTemplate(gref, gtpl, res, TemplateMatchModes.CCoeffNormed);
+                Cv2.Threshold(res, res, 0.8, 1.0, ThresholdTypes.Tozero);
+
+                double minval, maxval;
+                OpenCvSharp.Point minloc, maxloc;
+
+                Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
+
+                if (maxval >= threshold)
+                {
+                    return new Rectangle(maxloc.X, maxloc.Y, tplMat.Width, tplMat.Height);
+                }
+                return Rectangle.Empty;
+            }
+        }
     }
 }

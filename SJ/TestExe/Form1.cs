@@ -25,7 +25,6 @@ namespace TestExe
         {
             
         }
-        NETSZ.SZ sz = new NETSZ.SZ();
         IniFile ini = new IniFile("./kkk/ffff/kkk.ini");
         private void button1_Click(object sender, EventArgs e)
         {
@@ -50,7 +49,7 @@ namespace TestExe
         }  
         private void button2_Click(object sender, EventArgs e)
         {
-            sz.MoveTo(0,0);
+            SZ.FindScreenPic("1.bmp");
            
         }
 
